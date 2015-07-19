@@ -7,7 +7,7 @@ public class AppConstants {
 
     public static String API_BASE_URL = "http://api.themoviedb.org/3";
     public static String API_KEY_PARAMETER = "api_key";
-    public static String API_KEY="53002f1d67cba08bc0078b440f5cf507";
+    public static String API_KEY="";
 
     public static String API_DISCOVER_MID_URI ="/discover/movie";
 
@@ -23,5 +23,5 @@ public class AppConstants {
     public static String API_SORT_ASC = ".asc";
     public static String API_SORT_DESC = ".desc";
 
-    public static String API_IMAGE_MID_URI = "/movie/{id}/images";
+    public static String API_IMAGE_BASE_URI = "http://image.tmdb.org/t/p/w185";
 }

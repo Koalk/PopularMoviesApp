@@ -1,6 +1,5 @@
 package app.popularmovies.ourhome.com.popularmoviesapp;
 
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -21,16 +20,21 @@ import java.util.List;
 /**
  * Created by Daniel on 19/07/2015.
  */
-public class PopularMoviesGridFetcher extends AsyncTask<String,Void,List<Image>>{
+public class PopularMoviesGridFetcher extends AsyncTask<String,Void,List<MoviePoster>>{
 
     private final String LOG_TAG = PopularMoviesGridFetcher.class.getSimpleName();
     private String sortField;
     private String sortDirection;
+    private PosterGridFragment fragment;
+
+    public PopularMoviesGridFetcher (PosterGridFragment fragment){
+        this.fragment = fragment;
+    }
 
     @Override
-    protected List<Image> doInBackground(String... params) {
+    protected List<MoviePoster> doInBackground(String... params) {
 
-        List<Image> result = null;
+        List<MoviePoster> moviePosterList = null;
         sortField = AppConstants.API_SORT_POPULAR;
         sortDirection = AppConstants.API_SORT_DESC;
         if (params.length > 0){
@@ -102,37 +106,39 @@ public class PopularMoviesGridFetcher extends AsyncTask<String,Void,List<Image>>
             }
         }
         if (resultJsonString != null){
-            List<String> idList = null;
             try{
-                idList = getMoviesIds(resultJsonString);
+                moviePosterList = getMoviesPosters(resultJsonString);
             }
             catch (JSONException jsonException){
                 Log.e(LOG_TAG,"Error parsing json response.");
             }
-            if (idList != null){
-                result = getImagesFromIds(idList);
-            }
         }
-        return result;
+        return moviePosterList;
     }
 
-    private List<String> getMoviesIds(String movieListJsonStr)
+    private List<MoviePoster> getMoviesPosters(String movieListJsonStr)
             throws JSONException {
         JSONObject moviesJson = new JSONObject(movieListJsonStr);
         JSONArray moviesArray = moviesJson.getJSONArray("results");
-        List<String> resultStrs = new ArrayList<>();
+        List<MoviePoster> result = new ArrayList<>();
         for(int i = 0; i < moviesArray.length(); i++) {
+            MoviePoster moviePoster = new MoviePoster();
             JSONObject movie = moviesArray.getJSONObject(i);
-            resultStrs.add(movie.getString("id"));
-            Log.d(LOG_TAG,"Adding movie with id: "+resultStrs.get(i));
+            moviePoster.setId(movie.getString("id"));
+            moviePoster.setUri(movie.getString("poster_path"));
+            result.add(moviePoster);
+            Log.v(LOG_TAG, "Adding movie with poster: " + result.get(i).getUri());
         }
-        return resultStrs;
+        return result;
     }
 
-
-    private List<Image> getImagesFromIds(List<String> idList) {
-        List<Image> result = null;
-
-        return result;
+    @Override
+    protected void onPostExecute(List<MoviePoster> moviePostersList) {
+        if (moviePostersList != null){
+            ImageAdapter imageAdapter = fragment.getImageAdapter();
+            imageAdapter.getMoviePosterList().clear();
+            imageAdapter.getMoviePosterList().addAll(moviePostersList);
+            imageAdapter.notifyDataSetChanged();
+        }
     }
 }
