@@ -8,12 +8,11 @@ import android.view.MenuItem;
 
 public class MainActivity extends Activity {
 
-    private final String API_KEY="53002f1d67cba08bc0078b440f5cf507";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        new PopularMoviesGridFetcher().execute();
     }
 
     @Override
