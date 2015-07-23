@@ -129,13 +129,14 @@ public class PopularMoviesDetailFetcher extends AsyncTask<String,Void,MovieDetai
 
     @Override
     protected void onPostExecute(MovieDetail movieDetail) {
-        if (movieDetail != null){
+        if (movieDetail != null && fragment != null && fragment.getActivity() != null){
             fragment.getActivity().getActionBar().setTitle(movieDetail.getTitle());
             Picasso.with(fragment.getActivity()).load(AppConstants.API_DETAIL_IMAGE_BASE_URI + movieDetail.getImage()).into(fragment.getPosterView());
+            fragment.setPosterUri(movieDetail.getImage());
             fragment.getRatingView().setText(movieDetail.getVoteAverage());
             fragment.getReleaseDateView().setText(movieDetail.getReleaseDate().get(Calendar.DAY_OF_MONTH) + "/"
                     + movieDetail.getReleaseDate().get(Calendar.MONTH) + "/"
-                    + movieDetail.getReleaseDate().get(Calendar.YEAR) + "/");
+                    + movieDetail.getReleaseDate().get(Calendar.YEAR));
             fragment.getSynopsisView().setText(movieDetail.getSynopsis());
         }
     }

@@ -11,6 +11,7 @@ public class AppConstants {
     public static String API_BASE_URL = "http://api.themoviedb.org/3";
     public static String API_POSTER_BASE_URI = "http://image.tmdb.org/t/p/w185";
     public static String API_DETAIL_IMAGE_BASE_URI = "http://image.tmdb.org/t/p/w342";
+    public static String API_FULL_IMAGE_BASE_URI = "http://image.tmdb.org/t/p/original";
     public static String API_KEY_PARAMETER = "api_key";
     public static String API_KEY="";
 

@@ -2,8 +2,8 @@ package app.popularmovies.ourhome.com.popularmoviesapp;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +16,9 @@ import android.widget.TextView;
  */
 public class DetailActivityFragment extends Fragment {
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
+    private String filmId;
     private ImageView posterView;
-    private Image poster;
+    private String posterUri;
     private TextView ratingView;
     private TextView releaseDateView;
     private TextView synopsisView;
@@ -30,13 +31,17 @@ public class DetailActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         Intent caller = getActivity().getIntent();
-        String filmId = caller.getExtras().get(Intent.EXTRA_TEXT).toString();
+        if (filmId == null){
+            filmId = caller.getExtras().get(Intent.EXTRA_TEXT).toString();
+        }
         this.posterView = (ImageView) rootView.findViewById(R.id.movie_poster);
         this.posterView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent fullScreenIntent = new Intent(v.getContext(),FullscreenActivity.class);
-
+                Log.d(LOG_TAG,"Showing fullscreen");
+                Intent fullScreenIntent = new Intent(v.getContext(),FullScreenImageActivity.class);
+                fullScreenIntent.putExtra(FullScreenImageActivity.class.getName(), new String[]{posterUri,getActivity().getActionBar().getTitle().toString(),filmId});
+                startActivity(fullScreenIntent);
             }
         });
         this.ratingView = (TextView) rootView.findViewById(R.id.vote_average_value);
@@ -50,16 +55,16 @@ public class DetailActivityFragment extends Fragment {
         return posterView;
     }
 
-    public Image getPoster() {
-        return poster;
-    }
-
-    public void setPoster(Image poster) {
-        this.poster = poster;
-    }
-
     public void setPosterView(ImageView posterView) {
         this.posterView = posterView;
+    }
+
+    public String getPosterUri() {
+        return posterUri;
+    }
+
+    public void setPosterUri(String posterUri) {
+        this.posterUri = posterUri;
     }
 
     public TextView getRatingView() {
