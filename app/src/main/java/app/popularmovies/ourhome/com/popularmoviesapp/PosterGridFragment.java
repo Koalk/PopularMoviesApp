@@ -1,13 +1,17 @@
 package app.popularmovies.ourhome.com.popularmoviesapp;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.Toast;
+import android.widget.Spinner;
 
 public class PosterGridFragment extends Fragment {
 
@@ -15,6 +19,25 @@ public class PosterGridFragment extends Fragment {
 
     public PosterGridFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        Spinner spinner = (Spinner) menu.findItem(R.id.menuSort).getActionView();
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.sort_options, R.layout.sort_textview);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String orderPicked = AppConstants.SORT_OPTIONS.get(position);
+                getUpdateTask().execute(orderPicked);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
     @Override
@@ -32,13 +55,13 @@ public class PosterGridFragment extends Fragment {
         imageAdapter = new ImageAdapter(getActivity());
         postersView.setAdapter(imageAdapter);
         postersView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Toast.makeText(getActivity(), "" + position,
-                        Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                MoviePoster moviePoster = (MoviePoster) imageAdapter.getItem(position);
+                Intent detailActivity = new Intent(getActivity(),DetailActivity.class);
+                detailActivity.putExtra(Intent.EXTRA_TEXT,moviePoster.getId());
+                startActivity(detailActivity);
             }
         });
-        new PopularMoviesGridFetcher(this).execute();
         return rootView;
     }
 
@@ -48,5 +71,9 @@ public class PosterGridFragment extends Fragment {
 
     public void setImageAdapter(ImageAdapter imageAdapter) {
         this.imageAdapter = imageAdapter;
+    }
+
+    public PopularMoviesGridFetcher getUpdateTask() {
+        return new PopularMoviesGridFetcher(this);
     }
 }

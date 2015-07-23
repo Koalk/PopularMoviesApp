@@ -50,7 +50,7 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         Log.v(LOG_TAG,"Showing image with id: "+this.moviePosterList.get(position).getId());
-        Picasso.with(mContext).load(AppConstants.API_IMAGE_BASE_URI + this.moviePosterList.get(position).getUri()).into(imageView);
+        Picasso.with(mContext).load(AppConstants.API_POSTER_BASE_URI + this.moviePosterList.get(position).getUri()).into(imageView);
         return imageView;
     }
 

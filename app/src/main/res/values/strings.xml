@@ -1,9 +1,19 @@
 <resources>
-    <string name="app_name">PopularMoviesApp</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">Popular Movies</string>
     <string name="action_settings">Settings</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="sort_options">
+        <item name="popularity">Popularity</item>
+        <item name="revenue">Revenue</item>
+        <item name="original_title">Original title</item>
+        <item name="vote_average">Vote average</item>
+        <item name="vote_count">Vote count</item>
+    </string-array>
+    <string name="title_activity_detail">Popular Movies</string>
+    <string name="rating">Rating: </string>
+    <string name="date">Release date: </string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
