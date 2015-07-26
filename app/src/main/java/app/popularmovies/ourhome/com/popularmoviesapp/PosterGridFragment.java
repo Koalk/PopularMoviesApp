@@ -2,6 +2,7 @@ package app.popularmovies.ourhome.com.popularmoviesapp;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -57,12 +58,22 @@ public class PosterGridFragment extends Fragment {
         postersView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 MoviePoster moviePoster = (MoviePoster) imageAdapter.getItem(position);
-                Intent detailActivity = new Intent(getActivity(),DetailActivity.class);
-                detailActivity.putExtra(Intent.EXTRA_TEXT,moviePoster.getId());
+                Intent detailActivity = new Intent(getActivity(), DetailActivity.class);
+                detailActivity.putExtra(Intent.EXTRA_TEXT, moviePoster.getId());
                 startActivity(detailActivity);
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     public ImageAdapter getImageAdapter() {
