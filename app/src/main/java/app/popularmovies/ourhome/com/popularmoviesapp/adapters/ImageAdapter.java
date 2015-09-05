@@ -1,6 +1,7 @@
-package app.popularmovies.ourhome.com.popularmoviesapp;
+package app.popularmovies.ourhome.com.popularmoviesapp.adapters;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import app.popularmovies.ourhome.com.popularmoviesapp.AppConstants;
+import app.popularmovies.ourhome.com.popularmoviesapp.model.MoviePoster;
 
 /**
  * Created by Daniel on 19/07/2015.
@@ -50,7 +54,11 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         Log.v(LOG_TAG,"Showing image with id: "+this.moviePosterList.get(position).getId());
-        Picasso.with(mContext).load(AppConstants.API_POSTER_BASE_URI + this.moviePosterList.get(position).getUri()).into(imageView);
+        if (this.moviePosterList.get(position).getImage() == null) {
+            Picasso.with(mContext).load(AppConstants.API_POSTER_BASE_URI + this.moviePosterList.get(position).getUri()).into(imageView);
+        } else {
+            imageView.setImageBitmap(BitmapFactory.decodeByteArray(this.moviePosterList.get(position).getImage(), 0, this.moviePosterList.get(position).getImage().length));
+        }
         return imageView;
     }
 

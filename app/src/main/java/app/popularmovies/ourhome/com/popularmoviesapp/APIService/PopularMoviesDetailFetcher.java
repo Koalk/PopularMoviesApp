@@ -1,10 +1,10 @@
-package app.popularmovies.ourhome.com.popularmoviesapp;
+package app.popularmovies.ourhome.com.popularmoviesapp.APIService;
 
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,34 +14,33 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+
+import app.popularmovies.ourhome.com.popularmoviesapp.AppConstants;
+import app.popularmovies.ourhome.com.popularmoviesapp.DetailActivityFragment;
+import app.popularmovies.ourhome.com.popularmoviesapp.R;
+import app.popularmovies.ourhome.com.popularmoviesapp.adapters.ImageUtils;
+import app.popularmovies.ourhome.com.popularmoviesapp.model.MovieDetail;
 
 /**
  * Created by Daniel on 19/07/2015.
  */
-public class PopularMoviesGridFetcher extends AsyncTask<String,Void,List<MoviePoster>>{
+public class PopularMoviesDetailFetcher extends AsyncTask<String,Void,MovieDetail>{
 
-    private final String LOG_TAG = PopularMoviesGridFetcher.class.getSimpleName();
-    private String sortField;
-    private String sortDirection;
-    private PosterGridFragment fragment;
+    private final String LOG_TAG = PopularMoviesDetailFetcher.class.getSimpleName();
+    private String filmId;
+    private DetailActivityFragment fragment;
 
-    public PopularMoviesGridFetcher(PosterGridFragment fragment){
+    public PopularMoviesDetailFetcher(DetailActivityFragment fragment){
         this.fragment = fragment;
     }
 
     @Override
-    protected List<MoviePoster> doInBackground(String... params) {
+    protected MovieDetail doInBackground(String... params) {
 
-        List<MoviePoster> moviePosterList = null;
-        sortField = AppConstants.API_SORT_POPULAR;
-        sortDirection = AppConstants.API_SORT_DESC;
+        MovieDetail movieDetail = null;
         if (params.length > 0){
-            sortField = params[0];
-        }
-        if (params.length > 1){
-            sortDirection = params[1];
+            filmId = params[0];
         }
 
         // These two need to be declared outside the try/catch
@@ -56,8 +55,7 @@ public class PopularMoviesGridFetcher extends AsyncTask<String,Void,List<MoviePo
             // Construct the URL for the OpenWeatherMap query
             // Possible parameters are available at OWM's forecast API page, at
             // http://openweathermap.org/API#forecast
-            Uri uri = Uri.parse(AppConstants.API_BASE_URL + AppConstants.API_DISCOVER_MID_URI).buildUpon()
-                    .appendQueryParameter(AppConstants.API_SORT_PARAMETER, sortField+sortDirection)
+            Uri uri = Uri.parse(AppConstants.API_BASE_URL + AppConstants.API_DETAIL_MID_URI + "/" + filmId).buildUpon()
                     .appendQueryParameter(AppConstants.API_KEY_PARAMETER, AppConstants.API_KEY).build();
 
             Log.v(LOG_TAG, "Formed query: " + uri.toString());
@@ -107,38 +105,50 @@ public class PopularMoviesGridFetcher extends AsyncTask<String,Void,List<MoviePo
         }
         if (resultJsonString != null){
             try{
-                moviePosterList = getMoviesPosters(resultJsonString);
+                movieDetail = getMovieDetail(resultJsonString);
             }
             catch (JSONException jsonException){
                 Log.e(LOG_TAG,"Error parsing json response.");
             }
         }
-        return moviePosterList;
+        return movieDetail;
     }
 
-    private List<MoviePoster> getMoviesPosters(String movieListJsonStr)
-            throws JSONException {
-        JSONObject moviesJson = new JSONObject(movieListJsonStr);
-        JSONArray moviesArray = moviesJson.getJSONArray("results");
-        List<MoviePoster> result = new ArrayList<>();
-        for(int i = 0; i < moviesArray.length(); i++) {
-            MoviePoster moviePoster = new MoviePoster();
-            JSONObject movie = moviesArray.getJSONObject(i);
-            moviePoster.setId(movie.getString("id"));
-            moviePoster.setUri(movie.getString("poster_path"));
-            result.add(moviePoster);
-            Log.v(LOG_TAG, "Adding movie with poster: " + result.get(i).getUri());
-        }
+    private MovieDetail getMovieDetail(String movieDetailJson) throws JSONException {
+        JSONObject movie = new JSONObject(movieDetailJson);
+        String[] releaseDateStr = movie.getString("release_date").split("-");
+        Calendar releaseDate = Calendar.getInstance();
+        releaseDate.setTimeInMillis(0);
+        releaseDate.set(Calendar.YEAR,Integer.parseInt(releaseDateStr[0]));
+        releaseDate.set(Calendar.MONTH,Integer.parseInt(releaseDateStr[1]));
+        releaseDate.set(Calendar.DAY_OF_MONTH,Integer.parseInt(releaseDateStr[2]));
+        MovieDetail result = new MovieDetail(
+                movie.getString("title"),
+                ImageUtils.getImageByteArray(movie.getString("poster_path")),
+                releaseDate,
+                movie.getString("vote_average"),
+                movie.getString("overview"));
+
         return result;
     }
 
     @Override
-    protected void onPostExecute(List<MoviePoster> moviePostersList) {
-        if (moviePostersList != null){
-            ImageAdapter imageAdapter = fragment.getImageAdapter();
-            imageAdapter.getMoviePosterList().clear();
-            imageAdapter.getMoviePosterList().addAll(moviePostersList);
-            imageAdapter.notifyDataSetChanged();
+    protected void onPostExecute(MovieDetail movieDetail) {
+        if (movieDetail != null && fragment != null && fragment.getActivity() != null){
+            fragment.getActivity().getActionBar().setTitle(movieDetail.getTitle());
+            if (movieDetail.getImage() != null) {
+                fragment.getPosterView().setImageBitmap(BitmapFactory.decodeByteArray(movieDetail.getImage(), 0, movieDetail.getImage().length));
+            }
+            fragment.setPosterBitmap(movieDetail.getImage());
+            fragment.getRatingView().setText(movieDetail.getVoteAverage());
+            fragment.getReleaseDateView().setText(movieDetail.getReleaseDate().get(Calendar.DAY_OF_MONTH) + "/"
+                    + movieDetail.getReleaseDate().get(Calendar.MONTH) + "/"
+                    + movieDetail.getReleaseDate().get(Calendar.YEAR));
+            fragment.getSynopsisView().setText(movieDetail.getSynopsis());
+            if (movieDetail.getFavorite()) {
+                fragment.getStarButton().setIcon(R.drawable.star);
+            }
+            fragment.setMovieDetail(movieDetail);
         }
     }
 }

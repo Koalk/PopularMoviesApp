@@ -1,4 +1,4 @@
-package app.popularmovies.ourhome.com.popularmoviesapp;
+package app.popularmovies.ourhome.com.popularmoviesapp.model;
 
 import java.util.Calendar;
 
@@ -6,15 +6,18 @@ import java.util.Calendar;
  * Created by Daniel on 23/07/2015.
  */
 public class MovieDetail {
+
+    private Long _id;
     private String title;
-    private String image;
+    private byte[] image;
     private Calendar releaseDate;
     private String voteAverage;
     private String synopsis;
+    private boolean favorite;
 
     public MovieDetail() {}
 
-    public MovieDetail(String title, String image, Calendar releaseDate, String voteAverage, String synopsis) {
+    public MovieDetail(String title, byte[] image, Calendar releaseDate, String voteAverage, String synopsis) {
         this.title = title;
         this.image = image;
         this.releaseDate = releaseDate;
@@ -30,7 +33,7 @@ public class MovieDetail {
         this.title = title;
     }
 
-    public String getImage() {
+    public byte[] getImage() {
         return image;
     }
 
@@ -42,7 +45,7 @@ public class MovieDetail {
         this.releaseDate = releaseDate;
     }
 
-    public void setImage(String image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
@@ -60,5 +63,21 @@ public class MovieDetail {
 
     public void setSynopsis(String synopsis) {
         this.synopsis = synopsis;
+    }
+
+    public boolean getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public Long get_id() {
+        return _id;
+    }
+
+    public void set_id(Long _id) {
+        this._id = _id;
     }
 }

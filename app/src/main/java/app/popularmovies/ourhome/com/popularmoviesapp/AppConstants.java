@@ -24,6 +24,7 @@ public class AppConstants {
     public static String API_SORT_TITLE="original_title";
     public static String API_SORT_VOTE_AVG="vote_average";
     public static String API_SORT_VOTE_CNT="vote_count";
+    public static String API_SORT_FAVORITES = "favorites";
 
     public static List<String> SORT_OPTIONS;
     static {
@@ -33,6 +34,7 @@ public class AppConstants {
         SORT_OPTIONS.add(API_SORT_TITLE);
         SORT_OPTIONS.add(API_SORT_VOTE_AVG);
         SORT_OPTIONS.add(API_SORT_VOTE_CNT);
+        SORT_OPTIONS.add(API_SORT_FAVORITES);
     }
 
     public static String API_SORT_ASC = ".asc";

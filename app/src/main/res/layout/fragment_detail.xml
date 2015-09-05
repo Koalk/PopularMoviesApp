@@ -71,15 +71,19 @@
         </RelativeLayout>
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="20sp"
-            android:text="Hola que tal como estamos"
-            android:id="@+id/synopsis_text_view"/>
+            android:layout_height="match_parent">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:textSize="20sp"
+                android:text="Hola que tal como estamos\n\n\n\n\n\n\n\n\n\n\n\n\n\n Vamoooooos"
+                android:id="@+id/synopsis_text_view" />
+        </ScrollView>
     </LinearLayout>
 
 </LinearLayout>

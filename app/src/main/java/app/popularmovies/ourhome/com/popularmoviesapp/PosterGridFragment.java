@@ -14,6 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Spinner;
 
+import app.popularmovies.ourhome.com.popularmoviesapp.APIService.PopularMoviesGridFetcher;
+import app.popularmovies.ourhome.com.popularmoviesapp.adapters.ImageAdapter;
+import app.popularmovies.ourhome.com.popularmoviesapp.model.MoviePoster;
+
 public class PosterGridFragment extends Fragment {
 
     private ImageAdapter imageAdapter;
